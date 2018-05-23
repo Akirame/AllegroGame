@@ -3,11 +3,15 @@
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_native_dialog.h>
 
+bool bounding_box_collision(int b1_x, int b1_y, int b1_w, int b1_h, int b2_x, int b2_y, int b2_w, int b2_h);
+
 const float FPS = 60;
 const int SCREEN_W = 640;
 const int SCREEN_H = 480;
 const int PLAYER_SIZE = 32;
 const int ENEMY_SIZE = 32;
+
+
 int main(int argc, char **argv)
 {
 	ALLEGRO_DISPLAY *display = NULL;
@@ -103,6 +107,8 @@ int main(int argc, char **argv)
 
 		if (ev.type == ALLEGRO_EVENT_TIMER) {
 			redraw = true;
+			if (bounding_box_collision(playerX, playerY, PLAYER_SIZE, PLAYER_SIZE, enemyX, enemyY, ENEMY_SIZE, ENEMY_SIZE))
+				break;
 		}
 		else if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
 			break;
@@ -137,4 +143,17 @@ int main(int argc, char **argv)
 	al_destroy_event_queue(event_queue);
 
 	return 0;
+}
+bool bounding_box_collision(int b1_x, int b1_y, int b1_w, int b1_h, int b2_x, int b2_y, int b2_w, int b2_h)
+{
+	if ((b1_x > b2_x + b2_w - 1) || // is b1 on the right side of b2?
+		(b1_y > b2_y + b2_h - 1) || // is b1 under b2?
+		(b2_x > b1_x + b1_w - 1) || // is b2 on the right side of b1?
+		(b2_y > b1_y + b1_h - 1))   // is b2 under b1?
+	{
+		// no collision
+		return false;
+	}
+	// collision
+	return true;
 }
