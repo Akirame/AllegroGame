@@ -11,7 +11,6 @@ const int SCREEN_H = 480;
 const int PLAYER_SIZE = 32;
 const int ENEMY_SIZE = 32;
 
-
 int main(int argc, char **argv)
 {
 	ALLEGRO_DISPLAY *display = NULL;
@@ -23,6 +22,8 @@ int main(int argc, char **argv)
 	float playerY = SCREEN_H / 2.0 - PLAYER_SIZE / 2.0;
 	float enemyX = 15;
 	float enemyY = 10;
+	float enemySpeed = 10;
+	bool enemyMoveRight = false;
 
 	bool redraw = true;
 
@@ -109,6 +110,11 @@ int main(int argc, char **argv)
 			redraw = true;
 			if (bounding_box_collision(playerX, playerY, PLAYER_SIZE, PLAYER_SIZE, enemyX, enemyY, ENEMY_SIZE, ENEMY_SIZE))
 				break;
+			if (enemyX < 0)
+				enemySpeed *= -1;
+			else if (enemyX + ENEMY_SIZE > SCREEN_W)
+				enemySpeed *= -1;
+			enemyX += enemySpeed;
 		}
 		else if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
 			break;
