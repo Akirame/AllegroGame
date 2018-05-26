@@ -18,7 +18,7 @@ int main(int argc, char **argv)
 	ALLEGRO_EVENT_QUEUE *event_queue = NULL;
 	ALLEGRO_TIMER *timer = NULL;
 	ALLEGRO_BITMAP *enemy = NULL;
-	Player* player = new Player(SCREEN_W, SCREEN_H);
+	Player* player;
 
 	float enemyX = 15;
 	float enemyY = 10;
@@ -58,6 +58,8 @@ int main(int argc, char **argv)
 		al_destroy_timer(timer);
 		return -1;
 	}
+
+	player = new Player(SCREEN_W, SCREEN_H);
 
 	enemy = al_load_bitmap("assets/enemy.png");
 	if (!enemy)
@@ -113,7 +115,7 @@ int main(int argc, char **argv)
 		}
 		else if (ev.type == ALLEGRO_EVENT_KEY_DOWN)
 		{
-			player->Movement(ev);
+			player->Update(ev);
 		}
 		
 
@@ -129,7 +131,8 @@ int main(int argc, char **argv)
 		}
 	}
 
-	al_destroy_bitmap(player->GetBitmap());
+	delete player;
+	al_destroy_bitmap(enemy);
 	al_destroy_timer(timer);
 	al_destroy_display(display);
 	al_destroy_event_queue(event_queue);

@@ -1,31 +1,25 @@
 #include "Player.h"
 
-Player::Player()
-{
-	width = 32;
-	height = 32;
-	x = 10;
-	y = 10;
-	player = al_load_bitmap("assets/player.png");
-	if (!player)
-		fprintf(stderr, "failed to create player bitmap!\n");
-
-}
 Player::Player(int screenWidth, int screenHeight)
-{
+{		
 	width = 32;
 	height = 32;
 	x = screenWidth / 2 - width / 2;
 	y = screenHeight / 2 - height / 2;
-	player = al_load_bitmap("assets/player.png");
-	if (!player)
+	sprite = al_load_bitmap("assets/player.png");	
+	if (!sprite)
 		fprintf(stderr, "failed to create player bitmap!\n");
 }
 
 
 Player::~Player()
 {
-	delete player;
+	if(!sprite)
+	delete sprite;
+}
+void Player::Update(ALLEGRO_EVENT ev)
+{
+	Movement(ev);
 }
 void Player::Movement(ALLEGRO_EVENT ev)
 {	
@@ -64,5 +58,5 @@ float Player::GetWidht()
 }
 ALLEGRO_BITMAP* Player::GetBitmap()
 {
-	return player;
+	return sprite;
 }
