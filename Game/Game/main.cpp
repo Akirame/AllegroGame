@@ -3,6 +3,7 @@
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_native_dialog.h>
 #include "Player.h"
+#include "Enemy.h"
 
 bool bounding_box_collision(int b1_x, int b1_y, int b1_w, int b1_h, int b2_x, int b2_y, int b2_w, int b2_h);
 
@@ -16,14 +17,9 @@ int main(int argc, char **argv)
 {
 	ALLEGRO_DISPLAY *display = NULL;
 	ALLEGRO_EVENT_QUEUE *event_queue = NULL;
-	ALLEGRO_TIMER *timer = NULL;
-	ALLEGRO_BITMAP *enemy = NULL;
+	ALLEGRO_TIMER *timer = NULL;	
 	Player* player;
-
-	float enemyX = 15;
-	float enemyY = 10;
-	float enemySpeed = 10;
-	bool enemyMoveRight = false;
+	Enemy* enemy;
 
 	bool redraw = true;
 
@@ -60,17 +56,11 @@ int main(int argc, char **argv)
 	}
 
 	player = new Player(SCREEN_W, SCREEN_H);
+	enemy = new Enemy(SCREEN_W, SCREEN_H);
 
-	enemy = al_load_bitmap("assets/enemy.png");
-	if (!enemy)
-	{
-		fprintf(stderr, "failed to create enemy bitmap!\n");
-		al_destroy_display(display);
-		al_destroy_timer(timer);
-		return -1;
-	}
+
 	al_set_target_bitmap(player->GetBitmap());
-	al_set_target_bitmap(enemy);
+	al_set_target_bitmap(enemy->GetBitmap());
 			
 	al_set_target_bitmap(al_get_backbuffer(display));
 
@@ -102,13 +92,10 @@ int main(int argc, char **argv)
 
 		if (ev.type == ALLEGRO_EVENT_TIMER) {
 			redraw = true;
-			if (bounding_box_collision(player->GetX(), player->GetY(), player->GetWidht(), player->GetHeight(), enemyX, enemyY, ENEMY_SIZE, ENEMY_SIZE))
+			if (bounding_box_collision(player->GetX(), player->GetY(), player->GetWidht(), player->GetHeight(),
+				enemy->GetX() , enemy->GetY(), enemy->GetWidht(), enemy->GetHeight()))
 				break;
-			if (enemyX < 0)
-				enemySpeed *= -1;
-			else if (enemyX + ENEMY_SIZE > SCREEN_W)
-				enemySpeed *= -1;
-			enemyX += enemySpeed;
+			enemy->Update(ev);
 		}
 		else if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
 			break;
@@ -125,14 +112,14 @@ int main(int argc, char **argv)
 			al_clear_to_color(al_map_rgb(0, 0, 0));
 
 			al_draw_bitmap(player->GetBitmap(), player->GetX(), player->GetY() , 0);
-			al_draw_bitmap(enemy, enemyX, enemyY, 0);
+			al_draw_bitmap(enemy->GetBitmap(), enemy->GetX(), enemy->GetY(), 0);
 
 			al_flip_display();
 		}
 	}
 
 	delete player;
-	al_destroy_bitmap(enemy);
+	delete enemy;
 	al_destroy_timer(timer);
 	al_destroy_display(display);
 	al_destroy_event_queue(event_queue);
