@@ -13,9 +13,8 @@ Player::Player(int screenWidth, int screenHeight)
 
 
 Player::~Player()
-{
-	if(!sprite)
-	delete sprite;
+{	
+	al_destroy_bitmap(sprite);
 }
 void Player::Update(ALLEGRO_EVENT ev)
 {

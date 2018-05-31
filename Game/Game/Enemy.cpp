@@ -13,9 +13,8 @@ Enemy::Enemy(int screenWidth, int screenHeight)
 }
 
 Enemy::~Enemy()
-{
-	if (!sprite)
-		delete sprite;
+{	
+	al_destroy_bitmap(sprite);
 }
 void Enemy::Update(ALLEGRO_EVENT ev)
 {
